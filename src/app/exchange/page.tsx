@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import Image from 'next/image'
+import SearchInput from '../component/SearchInput'
+import ProductCard from '../component/ProductCard'
 
 interface Product {
   id: number
@@ -15,6 +16,8 @@ interface Product {
 export default function ExchangePage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('all')
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -32,6 +35,24 @@ export default function ExchangePage() {
 
   return (
     <div className="min-h-screen bg-zinc-900 text-white p-6">
+      <SearchInput value={searchTerm} onChange={setSearchTerm}/>
+
+    <div className='mb-6 flex flex-wrap gap-3'>
+      {['all', "food", "clothing", "electronics"].map((category) => (
+        <button
+          key={category}
+          onClick={() => setSelectedCategory(category)}
+          className={`px-4 py-1 rounded-full text-sm border transition ${
+            selectedCategory === category
+            ? 'bg-blue-600 text-white'
+            : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+            }`}
+        >
+          {category.charAt(0).toUpperCase() + category.slice(1)}
+        </button>
+      ))}
+    </div>
+
       <h1 className="text-3xl font-bold mb-6">Exchange Products</h1>
 
       {loading ? (
@@ -48,22 +69,19 @@ export default function ExchangePage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => (
-            <div key={product.id} className="bg-zinc-800 p-4 rounded-lg shadow">
-              <div className="relative w-full h-48 mb-2 rounded overflow-hidden">
-                <Image
-                  src={`https://srkswqjjdfkdddwemqtd.supabase.co/storage/v1/object/public/images/${product.image_url}`}
-                  alt={product.title}
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
-              <h2 className="text-xl font-semibold">{product.title}</h2>
-              <p className="text-sm text-zinc-300">{product.description}</p>
-              <span className="text-xs mt-1 inline-block bg-zinc-700 px-2 py-1 rounded">
-                {product.category}
-              </span>
-            </div>
+          {products
+          .filter((product) => {
+            const matchesCategory =
+              selectedCategory === "all" || product.category === selectedCategory
+            const matchesSearch = 
+              product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              product.description.toLowerCase().includes(searchTerm.toLowerCase())
+            return matchesCategory && matchesSearch
+          })
+          .map((product) => (
+
+            <ProductCard key={product.id} product={product} />
+
           ))}
         </div>
       )}
