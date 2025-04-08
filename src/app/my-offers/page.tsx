@@ -2,11 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import Image from 'next/image';
 
 interface Offer {
     id: string
     message: string
     from_user: string
+    product: {
+        title: string
+        image_url: string
+    }
     product_id: string
     created_at: string
 }
@@ -39,7 +44,7 @@ export default function MyOffersPage() {
 
         const { data, error } = await supabase
             .from('offers')
-            .select("*")
+            .select("id, message, from_user, product_id, created_at, product:products(title, image_url")
             .eq('to_user', myId)
             .order('created_at', { ascending: false })
 
@@ -66,9 +71,18 @@ export default function MyOffersPage() {
                         className='bg-zinc-800 p-4 rounded border border-zinc-700'
                     >
                         <p className='text-sm text-zinc-300 mb-2'>{offer.message}</p>
-                        <span className='text-xs text-zinc-500 block mb-3'>
-                            Product ID: {offer.product_id}
-                        </span>
+
+                        <div className='flex items-center gap-4 mb-3'>
+                            <Image
+                                src={`https://srkswqjjdfkdddwemqtd.supabase.co/storage/v1/object/public/images/${offer.product?.image_url}`}
+                                alt={offer.product?.title}
+                                className='w-16 h-16 object-cover rounded'
+                            />
+                            <div>
+                                <h3 className='font-semibold text-white'>{offer.product?.title}</h3>
+                                <p className='text-xs text-zinc-500'>Product ID: {offer.product_id}</p>
+                            </div>
+                        </div>
                         
                         <div className='flex gap-4'>
 
