@@ -65,7 +65,7 @@ export default function OfferChat({ offerId, currentUserId }: Props) {
                     <div
                         key={c.id}
                         className={`p-2 rounded text-sm ${
-                            c.sender_id = currentUserId
+                            c.sender_id === currentUserId
                             ? 'bg-blue-600 text-white text-right ml-auto max-w-[80%]'
                             : 'bg-zinc-700 text-zinc-300 mr-auto max-w-[80%]'
                             }`}
