@@ -1,67 +1,68 @@
 # 📦 boun_trade
 
-**A student-to-student barter platform built for Boğaziçi University** students to easily exchange food, clothing, electronics, and more.
+**Boğaziçi Öğrencileri için Kolay ve Güvenli Takas Platformu**
 
-Built with **Next.js**, **Supabase**, and **Tailwind CSS**.
+Günümüzde birçok öğrenci için maddi kaynaklar kısıtlı olabilir. boun_trade, öğrencilerin para harcamadan ihtiyaçlarını karşılamaları için tasarlanmış bir **takas sistemidir**. Gıda, kıyafet, elektronik gibi ürünleri kolayca ilan vererek ve diğer öğrencilerle takas yaparak kullanabilirsiniz.
 
----
-
-## ✨ Features
-
-- 📄 User authentication (only @boun.edu.tr emails allowed)
-- 📤 Product upload with image support (stored on Supabase)
-- 🔍 Search and filter products by category and keyword
-- 🔄 Offer system to propose trades between users
-- 💬 Built-in chat per offer for negotiation
-- ✅ Offer acceptance & rejection
-- 🛡️ Row-level security for data protection
+Giriş sadece **@boun.edu.tr** mail adresleriyle yapılabilir. Bu sayede yalnızca Boğaziçi öğrencileri platformda yer alabilir.
 
 ---
 
-## 🚀 Live Demo
+## ✨ Öne Çıkan Özellikler
 
-> _Add your Vercel link here once deployed._
+- 📄 E-posta ile giriş (yalnızca `@boun.edu.tr`)
+- 📅 Ürün ekleme (görsel destekli)
+- 🔍 Kategori ve başlığa göre filtreleme
+- 🔄 Takas teklifi gönderme
+- 💬 Teklif içi yorum yapma (chat)
+- ✅ Teklif kabul/red sistemleri
+- 🛡️ RLS ile güvenli veritabanı
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Canlı Sürüm
+
+> _Deploy edildikten sonra buraya link eklenebilir_
+
+---
+
+## 💡 Teknolojiler
 
 - **Frontend**: Next.js (App Router, Client Components), Tailwind CSS
-- **Backend**: Supabase (Auth, Database, Storage)
-- **Auth**: Supabase Email Magic Link (@boun.edu.tr restricted)
-- **Storage**: Supabase Public Buckets
+- **Backend**: Supabase (Auth, DB, Storage)
+- **Kimlik Doğrulama**: Supabase Email Magic Link
+- **Depolama**: Supabase Public Buckets
 
 ---
 
-## 🔧 Environment Setup
+## 🔧 Yerel Kurulum
 
-### 1. Clone the repo:
+### 1. Reposu Klonla:
 ```bash
 git clone https://github.com/SemihMutlu07/boun_trade.git
 cd boun_trade
 ```
 
-### 2. Install dependencies:
+### 2. Bağımlılıkları Yükle:
 ```bash
 npm install
 ```
 
-### 3. Create `.env.local`:
+### 3. `.env.local` Oluştur:
 ```
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
+(Supabase panelinden alabilirsiniz)
 
-You can find these in Supabase → Settings → API.
-
-### 4. Run locally:
+### 4. Uygulamayı Başlat:
 ```bash
 npm run dev
 ```
 
 ---
 
-## 📂 Project Structure
+## 📂 Proje Yapısı
 
 ```
 src/
@@ -81,14 +82,15 @@ src/
 
 ---
 
-## 🤝 Contributing
-This project is open to contributions by Boğaziçi students. If you'd like to improve it, feel free to fork, PR, or open issues.
+## 👥 Katkıda Bulunmak
+
+Proje Boğaziçi öğrencilerine açıktır. Katkıda bulunmak isterseniz, forklayarak PR gönderebilir veya issue açabilirsiniz.
 
 ---
 
-## 📜 License
+## 📄 Lisans
 MIT
 
 ---
 
-_Developed with ❤️ by Semih for the Boğaziçi community._
+_Sevgiyle geliştirildi ❤️ Boğaziçi topluluğu için - Semih_
