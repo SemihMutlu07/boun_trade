@@ -1,28 +1,23 @@
-// src/app/exchange/[id]/page.tsx
 
 import { supabase } from '../../lib/supabase'
 import { notFound } from 'next/navigation'
 import ProductDetailClient from './ProductDetailClient'
-import { Metadata } from 'next'
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { id: string }
-}): Promise<Metadata> {
-  return {
-    title: `Product ${params.id}`,
+export async function generateStaticParams() {
+  const { data } = await supabase.from('products').select('id')
+  return data?.map((product) => ({ id: product.id })) || []
+}
+
+interface PageProps {
+  params: {
+    id: string
   }
 }
 
-export default async function ProductDetailPage({
-  params,
-}: {
-  params: { id: string }
-}) {
+export default async function ProductDetailPage({ params }: PageProps) {
   const { data: product, error } = await supabase
     .from('products')
-    .select('id, title, description, category, image_url, is_traded, user_id')
+    .select('*')
     .eq('id', params.id)
     .single()
 
