@@ -8,13 +8,10 @@ export async function generateStaticParams() {
   return data?.map((product) => ({ id: product.id })) || []
 }
 
-interface PageProps {
-  params: {
-    id: string
-  }
-}
+type PageProps = Awaited<{ params: { id: string } }>
 
 export default async function ProductDetailPage({ params }: PageProps) {
+
   const { data: product, error } = await supabase
     .from('products')
     .select('*')
