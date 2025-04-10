@@ -4,10 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
 
-const images = [
-    "public/pass_1.png",
-    "public/pass_2.png"
-]
+const images = ["pass_1.png", "pass_2.png"];
 
 export default function NotFound() {
     const [randomImage, setRandomImage] = useState(images[0])
@@ -20,7 +17,7 @@ export default function NotFound() {
     return (
         <div className='relative min-h-screen flex flex-col items-center justify-center text-center px-4'>
             <Image
-                src={randomImage}
+                src={`https://srkswqjjdfkdddwemqtd.supabase.co/storage/v1/object/public/images/${randomImage}`}
                 alt="You SHALL NOOOOOOT PASSS"
                 fill
                 objectFit='cover'
