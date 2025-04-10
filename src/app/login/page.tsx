@@ -14,19 +14,30 @@ export default function LoginPage() {
     }, [])
     
     const handleLogin = async() => {
-        if (!email.endsWith('@boun.edu.tr')) {
-            setError('Only boun.edu.tr emails are allowed')
-            return
-        } //malum rektör yüzünden mail adresi düzeltilecek.
+        const isBOUN = email.endsWith('@boun.edu.tr');
+        const { error: authError } = await supabase.auth.signInWithOtp({email});
 
-        const { error } = await supabase.auth.signInWithOtp({ email })
-
-        if (error) {
-            setError(error.message)
-        } else {
-            setError('')
-            alert("Check your email for the login link.")
+        if (authError) {
+            setError(authError.message);
+            return;
         }
+
+        const { data: {user}, error: sessionError } = await supabase.auth.getUser();
+
+        if(sessionError || !user) {
+            setError('User not found after sign-in');
+            return;
+        }
+
+        const role = isBOUN ? 'student' : 'external';
+
+        await supabase.from('users').upsert({
+            id: user.id,
+            email,
+            role,
+        });
+
+        alert('Check your email for the login link.');
     }
 
     return (
