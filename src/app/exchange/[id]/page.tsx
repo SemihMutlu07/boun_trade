@@ -1,30 +1,34 @@
-import { notFound } from 'next/navigation';
-import {supabase} from '../../lib/supabase';
-import ProductDetailClient from './ProductDetailClient';
-import {Metadata } from 'next';
+// src/app/exchange/[id]/page.tsx
 
-type Props = {
-  params: {
-    id: string
-  }
-}
+import { supabase } from '../../lib/supabase'
+import { notFound } from 'next/navigation'
+import ProductDetailClient from './ProductDetailClient'
+import { Metadata } from 'next'
 
-export async function generateMetadata({params}: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string }
+}): Promise<Metadata> {
   return {
     title: `Product ${params.id}`,
   }
 }
 
-export default async function ProductDetailPage({params}: Props) {
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: { id: string }
+}) {
   const { data: product, error } = await supabase
-  .from('products')
-  .select('id, title, description, category, image_url, is_traded, user_id')
-  .eq('id', params.id)
-  .single()
+    .from('products')
+    .select('id, title, description, category, image_url, is_traded, user_id')
+    .eq('id', params.id)
+    .single()
 
-if (!product || error) {
-  notFound()
-}
+  if (!product || error) {
+    notFound()
+  }
 
-return <ProductDetailClient product={product} />
+  return <ProductDetailClient product={product} />
 }
