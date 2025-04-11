@@ -3,6 +3,8 @@
 import { useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import './globals.css';
+import MobileNavbar from './component/MobileNavbar';
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -25,7 +27,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <MobileNavbar/>
+      </body>
     </html>
   );
 }
