@@ -58,13 +58,13 @@ export default function OfferChat({ offerId, currentUserId }: Props) {
     }
 
     return (
-        <div className='bg-zinc-800 rounded-lg p-4 mt-6'>
+        <div className='bg-zinc-800 rounded-lg p-4 mt-6 shadow-md'>
             <h3 className='text-lg font-semibold mb-3'>Offer Chat</h3>
             <div className='space-y-2 max-h-64 overflow-y-auto pr-2'>
                 {comments.map((c) => (
                     <div
                         key={c.id}
-                        className={`p-2 rounded text-sm ${
+                        className={`p-2 rounded text-sm break-words ${
                             c.sender_id === currentUserId
                             ? 'bg-blue-600 text-white text-right ml-auto max-w-[80%]'
                             : 'bg-zinc-700 text-zinc-300 mr-auto max-w-[80%]'
@@ -75,17 +75,17 @@ export default function OfferChat({ offerId, currentUserId }: Props) {
                 ))}
             </div>
 
-            <div className='mt-3 flex gap-2'>
+            <div className='mt-4 flex gap-2'>
                 <input
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder='Dümenden bir teklif ver.'
-                    className='flex-1 p-2 rounded bg-znc-700 border border-zinc-600'
+                    className="flex-1 p-2 rounded-lg bg-zinc-700 border border-zinc-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button
                     onClick={handleSend}
-                    className='bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm'
+                    className='bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm active:scale-95 transition'
                 >
                     Send
                 </button>

@@ -1,35 +1,35 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
-import Image from 'next/image';
-import OfferChat from '../component/OfferChat';
+import { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
+import Image from 'next/image'
+import OfferChat from '../component/OfferChat'
 
 interface Product {
-  title: string;
-  image_url: string;
+  title: string
+  image_url: string
 }
 
 interface Offer {
-  id: string;
-  message: string;
-  from_user: string;
-  product_id: string;
-  created_at: string;
-  status: string;
-  product: Product[];
+  id: string
+  message: string
+  from_user: string
+  product_id: string
+  created_at: string
+  status: string
+  product: Product[]
 }
 
 export default function MyOffersPage() {
-  const [offers, setOffers] = useState<Offer[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [offers, setOffers] = useState<Offer[]>([])
+  const [loading, setLoading] = useState(true)
   const [openChatId, setOpenChatId] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchOffers = async () => {
-      const { data: sessionData } = await supabase.auth.getUser();
-      const myId = sessionData.user?.id;
-      if (!myId) return;
+      const { data: sessionData } = await supabase.auth.getUser()
+      const myId = sessionData.user?.id
+      if (!myId) return
 
       const { data, error } = await supabase
         .from('offers')
@@ -43,21 +43,21 @@ export default function MyOffersPage() {
           product:products!product_id (title, image_url)
         `)
         .eq('to_user', myId)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
 
-      if (!error && data) setOffers(data as Offer[]);
-      setLoading(false);
-    };
+      if (!error && data) setOffers(data as Offer[])
+      setLoading(false)
+    }
 
-    fetchOffers();
-  }, []);
+    fetchOffers()
+  }, [])
 
   return (
-    <div className="min-h-screen p-6 bg-zinc-900 text-white">
-      <h1 className="text-2xl font-bold mb-6">Incoming Offers</h1>
+    <div className="min-h-screen px-4 py-6 sm:px-6 bg-zinc-900 text-white">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6">Incoming Offers</h1>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-zinc-400">Loading...</p>
       ) : offers.length === 0 ? (
         <p className="text-zinc-400">You have no offers right now.</p>
       ) : (
@@ -65,23 +65,8 @@ export default function MyOffersPage() {
           {offers.map((offer) => (
             <li
               key={offer.id}
-              className="bg-zinc-800 p-4 rounded border border-zinc-700"
+              className="bg-zinc-800 p-4 sm:p-5 rounded-lg border border-zinc-700 animate-fade-in"
             >
-              <p className="text-sm text-zinc-300 mb-2">{offer.message}</p>
-
-            <button
-                onClick={() => 
-                    setOpenChatId((prev) => (prev === offer.id ? null : offer.id))
-                }
-                className='mt-3 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded'
-            >
-                {openChatId === offer.id? 'Hide Chat' : 'Open Chat'}
-            </button>
-
-            {openChatId === offer.id && (
-                <OfferChat offerId={offer.id} currentUserId={offer.from_user} />
-            )}
-
               <div className="flex items-center gap-4 mb-3">
                 <Image
                   src={`https://srkswqjjdfkdddwemqtd.supabase.co/storage/v1/object/public/images/${offer.product[0].image_url}`}
@@ -90,17 +75,32 @@ export default function MyOffersPage() {
                   height={64}
                   className="object-cover rounded"
                 />
-                <div>
-                  <h3 className="font-semibold text-white">{offer.product[0].title}</h3>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-white text-base sm:text-lg">{offer.product[0].title}</h3>
                   <p className="text-xs text-zinc-500">Product ID: {offer.product_id}</p>
                 </div>
               </div>
 
-              <p className="text-sm text-yellow-500 mb-2">Status: {offer.status}</p>
+              <p className="text-sm text-zinc-300 mb-3">{offer.message}</p>
+
+              <p className="text-yellow-500 text-sm mb-3">Status: {offer.status}</p>
+
+              <button
+                onClick={() =>
+                  setOpenChatId((prev) => (prev === offer.id ? null : offer.id))
+                }
+                className="bg-blue-600 hover:bg-blue-700 px-4 py-1.5 rounded text-sm transition"
+              >
+                {openChatId === offer.id ? 'Hide Chat' : 'Open Chat'}
+              </button>
+
+              {openChatId === offer.id && (
+                <OfferChat offerId={offer.id} currentUserId={offer.from_user} />
+              )}
             </li>
           ))}
         </ul>
       )}
     </div>
-  );
+  )
 }

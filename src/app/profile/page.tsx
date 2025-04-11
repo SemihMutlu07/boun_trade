@@ -106,20 +106,20 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className='min-h-screen p-6 bg-zinc-900 text-white'>
+    <div className='min-h-screen p-4 sm:p-6  bg-zinc-900 text-white'>
       <h1 className='text-2xl font-bold mb-4'>My Profile</h1>
-      <p>Email: {user?.email}</p>
+      <p className='text-zinc-400 text-sm'>Email: {user?.email}</p>
 
-      <div className='mt-4'>
+      <div className='mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-2'>
         <input
-          className='p-2 rounded bg-zinc-800 border border-zinc-700 w-full max-w-xs'
+          className='p-2 rounded bg-zinc-800 border border-zinc-700 w-full max-w-xs text-sm'
           type='text'
           placeholder='Display Name'
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
         />
         <button
-          className='ml-2 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700'
+          className='px-4 py-2 bg-blue-600 rounded text-sm hover:bg-blue-700'
           onClick={updateDisplayName}
         >
           Save
@@ -131,7 +131,7 @@ export default function ProfilePage() {
         {products.map((product) => (
           <div
             key={product.id}
-            className='bg-zinc-800 p-4 rounded border border-zinc-700'
+            className='bg-zinc-800 p-4 rounded border border-zinc-700 animate-fade-in'
           >
             <Image
               src={`https://srkswqjjdfkdddwemqtd.supabase.co/storage/v1/object/public/images/${product.image_url}`}
@@ -140,17 +140,17 @@ export default function ProfilePage() {
               height={100}
               className='rounded object-cover'
             />
-            <p className='mt-2'>{product.title}</p>
+            <p className='mt-2 text-sm'>{product.title}</p>
           </div>
         ))}
       </div>
 
-      <h2 className='text-xl mt-8 mb-2 font-semibold'>Sent Offers</h2>
+      <h2 className='text-xl mt-10 mb-3 font-semibold'>Sent Offers</h2>
       <ul className='space-y-4'>
         {offers.map((offer) => (
           <li
             key={offer.id}
-            className='bg-zinc-800 p-4 rounded border border-zinc-700'
+            className='bg-zinc-800 p-4 rounded border border-zinc-700 animate-fade-in'
           >
             <p className='text-sm text-zinc-300 mb-2'>{offer.message}</p>
             <div className='flex items-center gap-4'>
@@ -161,14 +161,14 @@ export default function ProfilePage() {
                 height={60}
                 className='rounded object-cover'
               />
-              <p>{offer.product.title}</p>
+              <p className='text-sm'>{offer.product.title}</p>
             </div>
             <p className='text-yellow-400 text-sm mt-2'>Status: {offer.status}</p>
           </li>
         ))}
       </ul>
 
-      <div className='mt-10 flex gap-4'>
+      <div className='mt-10 flex flex-col sm:flex-row gap-4'>
         <button
           onClick={handleLogout}
           className='bg-yellow-600 px-4 py-2 rounded hover:bg-yellow-700'

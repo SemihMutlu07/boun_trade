@@ -36,11 +36,11 @@ export default function MySentOffersPage() {
     },[])
 
     return (
-        <div className='min-h-screen p-6 bg-zinc-900 text-white'>
-            <h1 className='text-2xl font-bold mb-6'>My Sent Offers</h1>
+        <div className='min-h-screen px-4 py-6 sm:px-6 bg-zinc-900 text-white'>
+            <h1 className='text-2xl sm:text-3xl font-bold mb-6'>My Sent Offers</h1>
 
             {loading ? (
-                <p>Loading...</p>
+                <p className='text-zinc-400'>Loading...</p>
             ): offers.length === 0 ? (
                 <p className='text-zinc-400'>Henüz bir teklifiniz yok.</p>
             ) : (
@@ -48,15 +48,18 @@ export default function MySentOffersPage() {
                     {offers.map((offer) => (
                         <li 
                             key={offer.id}
-                            className='bg-zinc-800 p-4 rounded border border-zinc-700'
+                            className='bg-zinc-800 p-4 sm:p-5 rounded-lg border border-zinc-700 animate-fade-in'
                         >
                             <p className='text-sm text-zinc-300 mb-2'>{offer.message}</p>
-                            <span className='text-xs block text-zinc-400'>
-                                Product ID: {offer.product_id}
-                            </span>
-                            <span className='text-xs text-blue-400 block mt-1'>
-                                Status: {offer.status}
-                            </span>
+
+                            <div className='flex flex-col sm:flex-row sm:justify-between text-xs'> 
+                                <span className='text-zinc-400'>
+                                    Product ID: {offer.product_id}
+                                </span>
+                                <span className='text-blue-400 mt-1 sm:mt-0'>
+                                    Status: {offer.status}
+                                </span>
+                            </div>
                         </li>
                     ))}
                 </ul>
