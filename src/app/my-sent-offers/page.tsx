@@ -35,6 +35,14 @@ export default function MySentOffersPage() {
         fetchSentOffers()
     },[])
 
+    if (!offers.length && !loading) {
+        return (
+          <div className="min-h-screen p-6 bg-zinc-900 text-white">
+            <p className="text-red-400">Please log in to view your incoming offers.</p>
+          </div>
+        )
+      }
+      
     return (
         <div className='min-h-screen px-4 py-6 sm:px-6 bg-zinc-900 text-white'>
             <h1 className='text-2xl sm:text-3xl font-bold mb-6'>My Sent Offers</h1>

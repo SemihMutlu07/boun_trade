@@ -57,6 +57,11 @@ export default function OfferChat({ offerId, currentUserId }: Props) {
         }
     }
 
+    if (!currentUserId) {
+        return <p className="text-red-400 mt-4">Please log in to view or send messages.</p>
+      }
+      
+
     return (
         <div className='bg-zinc-800 rounded-lg p-4 mt-6 shadow-md'>
             <h3 className='text-lg font-semibold mb-3'>Offer Chat</h3>
