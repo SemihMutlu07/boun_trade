@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import Image from 'next/image'
 import OfferChat from '../component/OfferChat'
+import LoginRequired from '../component/LoginRequired'
 
 interface Product {
   title: string
@@ -24,12 +25,19 @@ export default function MyOffersPage() {
   const [offers, setOffers] = useState<Offer[]>([])
   const [loading, setLoading] = useState(true)
   const [openChatId, setOpenChatId] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+
 
   useEffect(() => {
     const fetchOffers = async () => {
       const { data: sessionData } = await supabase.auth.getUser()
       const myId = sessionData.user?.id
-      if (!myId) return
+      if (!myId) {
+        setLoading(false)
+        return
+      }
+
+      setUserId(myId)
 
       const { data, error } = await supabase
         .from('offers')
@@ -51,6 +59,9 @@ export default function MyOffersPage() {
 
     fetchOffers()
   }, [])
+
+  if (!loading && !userId) return <LoginRequired />
+
 
   return (
     <div className="min-h-screen px-4 py-6 sm:px-6 bg-zinc-900 text-white">

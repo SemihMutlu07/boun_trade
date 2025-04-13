@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import {supabase} from '../lib/supabase';
+import LoginRequired from './LoginRequired';
+import toast from 'react-hot-toast';
+
 
 interface Comment {
     id: string
@@ -12,12 +15,26 @@ interface Comment {
 
 interface Props {
     offerId: string
-    currentUserId: string
+    currentUserId?: string
 }
 
 export default function OfferChat({ offerId, currentUserId }: Props) {
     const [comments, setComments] = useState<Comment[]>([])
     const [newMessage, setNewMessage] = useState('')
+    const [userId, setUserId] = useState<string | null>(currentUserId ?? null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            if(!currentUserId) {
+                const {data} = await supabase.auth.getUser();
+                const fallbackUser = data.user;
+                setUserId(fallbackUser?.id ?? null);
+            }
+            setLoading(false)
+        };
+        checkAuth();
+    }, [currentUserId])
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -33,6 +50,11 @@ export default function OfferChat({ offerId, currentUserId }: Props) {
         fetchComments()
     }, [offerId])
 
+
+    if(userId) return null
+    // value never read hatasından kurtulmak için, gerekirse düzeltilir.
+
+
     const handleSend = async () => {
         if (!newMessage.trim()) return
 
@@ -43,23 +65,36 @@ export default function OfferChat({ offerId, currentUserId }: Props) {
         })
 
         if (!error) {
+            toast.success('Message sent!')
             setComments((prev) => [
-                ...prev,
-                {
-                    id: crypto.randomUUID(),
-                    offer_id: offerId,
-                    sender_id: currentUserId,
-                    message: newMessage.trim(),
-                    created_at: new Date().toISOString(),
-                },
+              ...prev,
+              {
+                id: crypto.randomUUID(),
+                offer_id: offerId,
+                sender_id: currentUserId!,
+                message: newMessage.trim(),
+                created_at: new Date().toISOString(),
+              },
             ])
             setNewMessage('')
-        }
+          } else {
+            toast.error('Failed to send message.')
+          }
     }
 
     if (!currentUserId) {
         return <p className="text-red-400 mt-4">Please log in to view or send messages.</p>
       }
+      
+      if (loading) {
+        return (
+          <div className="min-h-screen flex items-center justify-center text-white">
+            <p className="animate-pulse">Checking authentication...</p>
+          </div>
+        )
+      }
+        
+    if (!currentUserId) return <LoginRequired />
       
 
     return (

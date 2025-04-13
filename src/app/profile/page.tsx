@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import LoginRequired from '../component/LoginRequired'
+import toast from 'react-hot-toast'
 
 interface User {
   id: string
@@ -32,12 +34,19 @@ interface Offer {
   }
 }
 
+export const metadata = {
+  title: 'Barter App',
+  description: 'A community-driven item exchange platform for students.',
+};
+
+
 export default function ProfilePage() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [displayName, setDisplayName] = useState('')
   const [products, setProducts] = useState<Product[]>([])
   const [offers, setOffers] = useState<Offer[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -46,7 +55,10 @@ export default function ProfilePage() {
         error,
       } = await supabase.auth.getUser()
 
-      if (!authUser || error) return
+      if (!authUser || error){
+        setLoading(false)
+        return
+      }
 
       setUser({
         id: authUser.id,
@@ -82,27 +94,70 @@ export default function ProfilePage() {
         .eq('from_user', authUser.id)
 
       setOffers(userOffers || [])
+
+      setLoading(false)
     }
 
     fetchProfile()
   }, [])
 
+  if (!user && !loading) return <LoginRequired />
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <p className="animate-pulse">Checking authentication...</p>
+      </div>
+    )
+  }
+  
+
   const updateDisplayName = async () => {
     if (!user) return
-    await supabase.from('users').update({ display_name: displayName }).eq('id', user.id)
-    alert('Display name updated!')
-  }
+    const { error } = await supabase
+      .from('users')
+      .update({ display_name: displayName })
+      .eq('id', user.id)
+
+      if(error) {
+        toast.error('Failed to update name.')
+      } else {
+        toast.success('Display name updated')
+      }
+
+    }
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
+    const {error} = await supabase.auth.signOut()
+    if (error) {
+      toast.error('Logout Failed.')
+    } else {
+      toast.success('Logged out successfully!')
+      router.push('/')
+    }
   }
 
   const handleDeleteAccount = async () => {
     if (!user) return
-    await supabase.from('users').delete().eq('id', user.id)
-    await supabase.auth.signOut()
-    router.push('/')
+
+    const {error: deleteError} = await supabase
+      .from('users')
+      .delete()
+      .eq('id', user.id)
+
+      if (deleteError) {
+        toast.error('Failed to delete acccount.')
+        return
+      }
+      
+      const {error: signOutError} = await supabase.auth.signOut()
+      if(signOutError) {
+        toast.error('Signed out error after deleting.')
+        return
+      }
+
+      toast.success('Account deleted.')
+      router.push('/')
   }
 
   return (

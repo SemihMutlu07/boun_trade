@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import SearchInput from '../component/SearchInput'
 import ProductCard from '../component/ProductCard'
+import toast from 'react-hot-toast'
+
 
 interface Product {
   id: number
@@ -24,6 +26,7 @@ export default function ExchangePage() {
       const { data, error } = await supabase.from('products').select('*')
       if (error) {
         console.error('Error fetching products:', error)
+        toast.error('Failed to load products.')
       } else {
         setProducts(data || [])
       }

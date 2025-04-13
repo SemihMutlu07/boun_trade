@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase'; 
+import toast from 'react-hot-toast';
+
+
 
 interface OfferModalProps {
     productId: string
@@ -16,11 +19,15 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        
         setLoading(true)
+
         const { data: userData } = await supabase.auth.getUser()
         const fromUser = userData.user?.id
-        if (!fromUser || !message.trim()) return
+        if (!fromUser || !message.trim()) {
+            toast.error('Invalid message or user not found :(');
+            setLoading(false);
+            return;
+        }
         
         const { error } = await supabase.from('offers').insert({
             from_user: fromUser,
@@ -30,7 +37,13 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
             message,
         })
 
-        if (!error) setSent(true)
+        if (!error) {
+            toast.success('Offer sent!')
+            setSent(true)
+          } else {
+            toast.error('Failed to send offer.')
+          }
+          
         setLoading(false)
     }
 

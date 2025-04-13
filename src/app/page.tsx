@@ -5,6 +5,12 @@ import { useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import Link from 'next/link';
 
+export const metadata = {
+  title: 'Barter App',
+  description: 'A community-driven item exchange platform for students.',
+};
+
+
 export default function Home() {
   const router = useRouter()
 
