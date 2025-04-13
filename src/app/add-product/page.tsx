@@ -139,10 +139,11 @@ export default function AddProductPage() {
                 onChange={(e) => setImageFile(e.target.files?.[0] || null)}
               />
               <button
+                disabled={loading}
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 transition text-white px-4 py-2 rounded w-full"
               >
-                Add Product
+                {loading ? "Adding..." : "Add Product"}
               </button>
             </form>
           </div>
