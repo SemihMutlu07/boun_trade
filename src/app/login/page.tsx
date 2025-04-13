@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-    const [email, setEmail] = useState("");
+    const [emailInput, setEmailInput] = useState('');
     const router = useRouter();
 
 
@@ -15,7 +15,7 @@ export default function LoginPage() {
           const { data } = await supabase.auth.getUser();
           if (data.user) {
             toast.success('You are already logged in!');
-            router.push('/profile'); // or wherever you want to redirect
+            router.push('/exchange'); 
           }
         };
         checkSession();
@@ -23,8 +23,13 @@ export default function LoginPage() {
     
     const handleLogin = async () => {
         toast.dismiss();
+
+        const fullEmail = emailInput.includes('@')
+            ? emailInput
+            : `${emailInput}@std.bogazici.edu.tr`
         
-        const { error } = await supabase.auth.signInWithOtp({ email });
+        
+        const { error } = await supabase.auth.signInWithOtp({ email: fullEmail });
     
         if (error) {
           toast.error(error.message);
@@ -44,8 +49,8 @@ export default function LoginPage() {
                 <input
                     type="email"
                     placeholder='you@std.bogazici.edu.tr'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
                     className='w-full p-3 rounded-lg bg-zinc-700 placeholder-zinc-400 text-white focus:outline-none focus:ring-blue-500 focus:ring-2'
                 />
 
