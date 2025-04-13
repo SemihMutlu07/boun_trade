@@ -13,9 +13,6 @@ interface User {
   display_name?: string | null
 }
 
-
-
-
 export default function AddProductPage() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -52,56 +49,63 @@ export default function AddProductPage() {
       )
     }
 
-    if (!user) return <LoginRequired />
+    if (!user) return <LoginRequired />;
 
-      const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-
-        if (!imageFile) {
-            toast.error('Please upload an image.')
-            return
-        }
-
-        const cleanName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '_')
-        const imagePath = `${Date.now()}-${cleanName}`
-
-
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+  
+      if (!user) {
+        toast.error('Login required');
+        return;
+      }
+  
+      const cleanTitle = title.trim();
+      const cleanDesc = description.trim();
+  
+      if (!cleanTitle || !cleanDesc || !category) {
+        toast.error('Please fill all fields.');
+        return;
+      }
+  
+      let imagePath = '';
+  
+      if (imageFile) {
+        const cleanName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
+        imagePath = `${Date.now()}-${cleanName}`;
+  
         const { error: uploadError } = await supabase.storage
           .from('images')
           .upload(imagePath, imageFile, {
             cacheControl: '3600',
             upsert: false,
             contentType: imageFile.type,
-        })
-
+          });
+  
         if (uploadError) {
-            toast.error('Image upload failed.')
-            return
+          toast.error('Image upload failed.');
+          return;
         }
-
-        if(!user) {
-          toast.error('user not found, please log in again :)')
-          return
-        }
-        
-        //inserting product to db
-        const { error } = await supabase.from('products').insert({
-            user_id: user.id,
-            title,
-            description,
-            category,
-            image_url: imagePath,
-        })
-        
-        if (error) {
-            toast.error('Failed to add product.')
-        } else {
-            toast.error("Ürünün Eklendi!")
-            setTitle('')
-            setDescription('')
-            setImageFile(null)
-        }
-    }
+      }
+  
+      const { error: insertError } = await supabase.from('products').insert({
+        user_id: user.id,
+        title: cleanTitle,
+        description: cleanDesc,
+        category,
+        image_url: imagePath, // if no image, store empty string
+      });
+  
+      if (insertError) {
+        toast.error('Failed to add product.');
+        return;
+      }
+  
+      toast.success("Product added!");
+      setTitle('');
+      setDescription('');
+      setImageFile(null);
+    };
+  
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-zinc-900 text-white p-4">
