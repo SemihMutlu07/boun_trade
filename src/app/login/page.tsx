@@ -11,15 +11,14 @@ export default function LoginPage() {
 
 
     useEffect(() => {
-        const checkSession = async () => {
+      const checkSession = async () => {
           const { data } = await supabase.auth.getUser();
-          if (data.user) {
-            toast.success('You are already logged in!');
-            router.push('/exchange'); 
+          if (data?.user) {
+            router.push('/exchange');
           }
         };
         checkSession();
-      }, [router]);
+    }, [router]);
     
     const handleLogin = async () => {
         toast.dismiss();
