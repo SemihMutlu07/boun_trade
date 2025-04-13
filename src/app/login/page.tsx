@@ -9,34 +9,19 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
 
     
-    const handleLogin = async() => {
-        const isBOUN = email.endsWith('@std.bogazici.edu.tr');
-        const { error: authError } = await supabase.auth.signInWithOtp({email});
-
+    const handleLogin = async () => {
         toast.dismiss();
-
-        if (authError) {
-            toast.error(authError.message);
-            return;
+        
+        const { error } = await supabase.auth.signInWithOtp({ email });
+    
+        if (error) {
+          toast.error(error.message);
+          return;
         }
-
-        const { data: {user}, error: sessionError } = await supabase.auth.getUser();
-
-        if(sessionError || !user) {
-            toast.error('User not found after sign-in');
-            return;
-        }
-
-        const role = isBOUN ? 'student' : 'external';
-
-        await supabase.from('users').upsert({
-            id: user.id,
-            email,
-            role,
-        });
-
+    
         toast.success('📩 Magic link sent! Check your email.');
-    }
+    
+      };
 
     return (
         <div className='min-h-screen flex items-center justify-center bg-zinc-900 px-4 sm:px-8 py-12 text-white'>
@@ -60,7 +45,7 @@ export default function LoginPage() {
                 </button>
 
                 <p className='text-xs text-zinc-400 text-center'>
-                    No password needed, just check your mail✨
+                    No password needed, just check your mail.
                 </p>
             </div>
         </div>
