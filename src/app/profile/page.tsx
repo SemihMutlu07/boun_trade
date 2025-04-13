@@ -34,10 +34,6 @@ interface Offer {
   }
 }
 
-export const metadata = {
-  title: 'Barter App',
-  description: 'A community-driven item exchange platform for students.',
-};
 
 
 export default function ProfilePage() {
