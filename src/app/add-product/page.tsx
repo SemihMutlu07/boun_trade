@@ -85,6 +85,22 @@ export default function AddProductPage() {
           toast.error('Image upload failed.');
           return;
         }
+
+        const { error } = await supabase.from('products').insert({
+          user_id: user.id,
+          title,
+          description,
+          category,
+          image_url: imagePath,
+        });
+        
+        if (error) {
+          console.error('Insert error:', error);
+          toast.error(`Failed to add product: ${error.message}`);
+        } else {
+          toast.success('🎉 Product added!');
+        }
+        
       }
   
       const { error: insertError } = await supabase.from('products').insert({
