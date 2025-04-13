@@ -1,13 +1,25 @@
 "use client";
 
-import { useState } from 'react'; 
+import { useState, useEffect } from 'react'; 
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast'
-
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
+    const router = useRouter();
 
+
+    useEffect(() => {
+        const checkSession = async () => {
+          const { data } = await supabase.auth.getUser();
+          if (data.user) {
+            toast.success('You are already logged in!');
+            router.push('/profile'); // or wherever you want to redirect
+          }
+        };
+        checkSession();
+      }, [router]);
     
     const handleLogin = async () => {
         toast.dismiss();
