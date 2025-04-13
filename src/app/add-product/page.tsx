@@ -50,29 +50,28 @@ export default function AddProductPage() {
     }
 
     if (!user) return <LoginRequired />;
-
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-  
+    
       if (!user) {
         toast.error('Login required');
         return;
       }
-  
+    
       const cleanTitle = title.trim();
       const cleanDesc = description.trim();
-  
+    
       if (!cleanTitle || !cleanDesc || !category) {
         toast.error('Please fill all fields.');
         return;
       }
-  
+    
       let imagePath = '';
-  
+    
       if (imageFile) {
         const cleanName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
         imagePath = `${Date.now()}-${cleanName}`;
-  
+    
         const { error: uploadError } = await supabase.storage
           .from('images')
           .upload(imagePath, imageFile, {
@@ -80,49 +79,33 @@ export default function AddProductPage() {
             upsert: false,
             contentType: imageFile.type,
           });
-  
+    
         if (uploadError) {
           toast.error('Image upload failed.');
           return;
         }
-
-        const { error } = await supabase.from('products').insert({
-          users_id: user.id,
-          title,
-          description,
-          category,
-          image_url: imagePath,
-        });
-        
-        if (error) {
-          console.error('Insert error:', error);
-          toast.error(`Failed to add product: ${error.message}`);
-        } else {
-          toast.success('🎉 Product added!');
-        }
-        
       }
-  
-      const { error: insertError } = await supabase.from('products').insert({
-        user_id: user.id,
+    
+      const { error } = await supabase.from('products').insert({
+        users_id: user.id,
         title: cleanTitle,
         description: cleanDesc,
         category,
-        image_url: imagePath, // if no image, store empty string
+        image_url: imagePath,
       });
-  
-      if (insertError) {
-        toast.error('Failed to add product.');
+    
+      if (error) {
+        console.error('Insert error:', error);
+        toast.error(`Failed to add product: ${error.message}`);
         return;
       }
-  
-      toast.success("Product added!");
+    
+      toast.success('🎉 Product added!');
       setTitle('');
       setDescription('');
       setImageFile(null);
     };
-  
-
+    
     return (
         <div className="min-h-screen flex items-center justify-center bg-zinc-900 text-white p-4">
           <div className="bg-zinc-800 p-6 rounded-xl shadow-lg w-full max-w-md">
