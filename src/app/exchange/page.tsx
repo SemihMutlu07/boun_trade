@@ -6,7 +6,6 @@ import SearchInput from '../component/SearchInput'
 import ProductCard from '../component/ProductCard'
 import toast from 'react-hot-toast'
 
-
 interface Product {
   id: number
   title: string
@@ -20,9 +19,13 @@ export default function ExchangePage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [isFetching, setIsFetching] = useState(false)
+
+  
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setIsFetching(true)
       const { data, error } = await supabase.from('products').select('*')
       if (error) {
         console.error('Error fetching products:', error)
@@ -31,12 +34,20 @@ export default function ExchangePage() {
         setProducts(data || [])
       }
       setLoading(false)
+      setIsFetching(false)
     }
 
     fetchProducts()
   }, [])
 
-  return (
+  if (loading || isFetching) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <p className="animate-pulse text-lg">Loading exchange items...</p>
+      </div>
+    )
+  }
+    return (
     <div className="min-h-screen bg-zinc-900 text-white px-4 py-6 sm:px-6">
       <h1 className="text-2xl sm:text-3xl font-bold mb-4">Exchange Products</h1>
 
