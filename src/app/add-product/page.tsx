@@ -87,7 +87,7 @@ export default function AddProductPage() {
         }
 
         const { error } = await supabase.from('products').insert({
-          user_id: user.id,
+          users_id: user.id,
           title,
           description,
           category,
