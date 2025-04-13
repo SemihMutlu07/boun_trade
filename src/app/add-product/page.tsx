@@ -13,10 +13,7 @@ interface User {
   display_name?: string | null
 }
 
-export const metadata = {
-  title: 'Add Product | Barter App',
-  description: 'Upload a new item and exchange it with others in your campus.',
-};
+
 
 
 export default function AddProductPage() {
