@@ -20,6 +20,7 @@ export default function AddProductPage() {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
 
     useEffect(() => {
@@ -50,9 +51,13 @@ export default function AddProductPage() {
     }
 
     if (!user) return <LoginRequired />;
+
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-    
+      if (isSubmitting) return;
+
+      setIsSubmitting(true);
+
       if (!user) {
         toast.error('Login required');
         return;
@@ -95,8 +100,8 @@ export default function AddProductPage() {
       });
     
       if (error) {
-        console.error('Insert error:', error);
         toast.error(`Failed to add product: ${error.message}`);
+        setIsSubmitting(false);
         return;
       }
     
@@ -104,6 +109,7 @@ export default function AddProductPage() {
       setTitle('');
       setDescription('');
       setImageFile(null);
+      setIsSubmitting(false);
     };
     
     return (
@@ -139,11 +145,11 @@ export default function AddProductPage() {
                 onChange={(e) => setImageFile(e.target.files?.[0] || null)}
               />
               <button
-                disabled={loading}
+                disabled={isSubmitting}
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 transition text-white px-4 py-2 rounded w-full"
               >
-                {loading ? "Adding..." : "Add Product"}
+                {isSubmitting ? "Adding..." : "Add Product"}
               </button>
             </form>
           </div>

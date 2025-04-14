@@ -23,26 +23,45 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
 
         const { data: userData } = await supabase.auth.getUser()
         const fromUser = userData.user?.id
+
         if (!fromUser || !message.trim()) {
-            toast.error('Invalid message or user not found :(');
+            toast.error('You must write a message :(');
             setLoading(false);
             return;
         }
         
-        const { error } = await supabase.from('offers').insert({
+        const {data: existingOffers, error: checkError } = await supabase
+            .from('offers')
+            .select('id')
+            .eq('from_user', fromUser)
+            .eq('product_id', productId);
+        
+        if (checkError) {
+            toast.error('Failed to check existing offers.');
+            setLoading(false);
+            return;
+        }
+
+        if (existingOffers && existingOffers.length > 0) {
+            toast.error('You already sent an offer for this product.');
+            setLoading(false);
+            return;
+        }
+
+        const {error} = await supabase.from('offers').insert({
             from_user: fromUser,
-            to_user: toUserId,
+            to_user: toUserId, 
             product_id: productId,
             status: 'pending',
             message,
-        })
+        });
 
-        if (!error) {
-            toast.success('Offer sent!')
-            setSent(true)
-          } else {
+        if(!error) {
+            toast.success('Offer sent!');
+            setSent(true);
+        } else {
             toast.error('Failed to send offer.')
-          }
+        }
           
         setLoading(false)
     }

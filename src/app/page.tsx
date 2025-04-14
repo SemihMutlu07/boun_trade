@@ -18,7 +18,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center text-center p-6 bg-zinc-900 text-white'>
+    <div className='pb-20 min-h-screen flex flex-col items-center justify-center text-center p-6 bg-zinc-900 text-white'>
       <h1 className='text-4xl font-bold mb-4'>Welcome to BounTrade 🤝</h1>
       <p className='text-lg max-w-xl mb-8 text-zinc-400'>
         A campus-based TAKAS platform where students exchange goods easily and securely.

@@ -22,6 +22,7 @@ interface Offer {
   }
 }
 
+
 export default function OfferDetailPage() {
   const params = useParams()
   const offerId = params?.id as string
@@ -29,6 +30,7 @@ export default function OfferDetailPage() {
   const [offer, setOffer] = useState<Offer | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+
 
   useEffect(() => {
     const fetchOffer = async () => {
@@ -87,7 +89,7 @@ export default function OfferDetailPage() {
           alt={offer.product.title}
           width={500}
           height={300}
-          className="rounded w-full max-h-[300px] object-cover"
+          classNam-e="rounded w-full max-h-[300px] object-cover"
         />
         <h2 className="text-xl mt-3 font-semibold">{offer.product.title}</h2>
         <p className="mt-2 text-zinc-300">💬 {offer.message || "(No message)"}</p>
@@ -96,9 +98,17 @@ export default function OfferDetailPage() {
 
       {isOwner && (
         <div className="mb-6">
-          <UpdateOfferModal offerId={offer.id} />
+          <UpdateOfferModal 
+            offerId={offer.id}
+            currentMessage={offer.message}
+            onClose={() => {}} // you can pass a better function here if needed
+            onOfferUpdated={() => toast.success("Offer updated!")}
+            onOfferDeleted={() => toast.success("Offer deleted!")}
+          />
         </div>
       )}
+
+
 
       <OfferChat offerId={offer.id} currentUserId={userId} />
     </div>

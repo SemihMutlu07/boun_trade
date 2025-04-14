@@ -5,6 +5,7 @@ import {Toaster} from 'react-hot-toast';
 import { supabase } from './lib/supabase';
 import './globals.css';
 import MobileNavbar from './component/MobileNavbar';
+import DesktopNavbar from './component/DesktopNavbar';
 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <DesktopNavbar/>
         {children}
         <Toaster position="top-right" toastOptions={{
           style: {
