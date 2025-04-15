@@ -7,7 +7,7 @@ import ProductCard from '../component/ProductCard'
 import toast from 'react-hot-toast'
 
 interface Product {
-  id: number
+  id: string
   title: string
   description: string
   category: string

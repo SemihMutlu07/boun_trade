@@ -1,9 +1,7 @@
 import { supabase } from '../../lib/supabase';
 import ProductDetailClient from './ProductDetailClient';
 
-type Params = Promise<{ id: string }>;
-
-export default async function ProductDetailPage({ params }: { params: Params }) {
+export default async function ProductDetailPage({ params }: { params: {id: string} }) {
   const { id } = await params;
 
   const { data: product, error } = await supabase
@@ -18,7 +16,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
   return (
     <div className='min-h-screen bg-zinc-900 text-white px-4 py-6 sm:px-6'>
-      <ProductDetailClient product={product} />;
+      <ProductDetailClient product={product} />
     </div>
   )
 }

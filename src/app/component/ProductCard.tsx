@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 interface Product {
-    id: number
+    id: string
     title: string
     description: string
     category: string

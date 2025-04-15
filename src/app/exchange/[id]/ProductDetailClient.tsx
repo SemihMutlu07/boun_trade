@@ -29,8 +29,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
   return (
     <div className="min-h-screen px-4 py-6 sm:px-6 bg-zinc-900 text-white">
-      <div className="max-w-3xl mx-auto">
-        <div className="relative w-full h-64 sm:h-80 rounded overflow-hidden mb-6">
+      <div className="max-w-4xl mx-auto">
+        <div className="relative w-full h-64 sm:h-72 md:h-80 lg:h-[400px] rounded overflow-hidden mb-6">
           <Image
             src={`https://srkswqjjdfkdddwemqtd.supabase.co/storage/v1/object/public/images/${product.image_url}`}
             alt={product.title}
