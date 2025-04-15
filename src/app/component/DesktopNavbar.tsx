@@ -3,9 +3,18 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Plus, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 
 export default function Navbar() {
     const pathname = usePathname()
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        supabase.auth.getUser().then(({data}) => {
+            setIsLoggedIn(!!data.user);
+        }) 
+    }, [])
 
     const navItems = [
         { href: '/exchange', label: 'Exchange', icon: Home },
@@ -30,6 +39,15 @@ export default function Navbar() {
                                 {label}
                             </Link>
                         ))}
+
+                        {!isLoggedIn && (
+                            <Link
+                                href="/login"
+                                className='text-sm text-white hover:text-blue-500 transition'
+                            >
+                                Log In
+                            </Link>
+                        )}
                     </nav>
                 </div>
             </div>

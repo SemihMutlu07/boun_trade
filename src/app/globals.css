@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+body {
+  background-color: #18181b;
+  color: white;
+}
+
 @layer utilities {
   .animate-fade-in {
     animation: fade-in 0.4s ease-out forwards;

@@ -19,13 +19,22 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        setLoading(true)
+        if (loading) return;
 
+        setLoading(true);
+        toast.dismiss();
+        
         const { data: userData } = await supabase.auth.getUser()
         const fromUser = userData.user?.id
 
-        if (!fromUser || !message.trim()) {
-            toast.error('You must write a message :(');
+        if(!fromUser) {
+            toast.error('Login required.');
+            setLoading(false);
+            return;
+        }
+
+        if (!message.trim()) {
+            toast.error('Please write a message :(');
             setLoading(false);
             return;
         }
@@ -57,10 +66,10 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
         });
 
         if(!error) {
-            toast.success('Offer sent!');
+            toast.success('✅ Offer sent successfully!');
             setSent(true);
         } else {
-            toast.error('Failed to send offer.')
+            toast.error('Offer submission failed.')
         }
           
         setLoading(false)
@@ -81,29 +90,34 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
                 ) : (
                     <>
                         <h2 className='text-xl font-bold mb-4 text-center'>Send an Offer</h2>
-                        <textarea
-                            className='w-full p-2 bg-zinc-700 border border-zinc-600 rounded text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500'
-                            rows={4}
-                            placeholder="3 muza bir elma?"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)} 
-                        />
-                        <div className='mt-4 flex justify-between items-center text-sm'>
-                            <button 
-                                onClick={onClose} 
-                                className='text-zinc-400 hover:underline'
-                            >
-                                Cancel
-                            </button>
-                            
-                            <button
-                                onClick={handleSubmit}
+                        <form onSubmit={handleSubmit}>
+                            <textarea
+                                className='w-full p-2 bg-zinc-700 border border-zinc-600 rounded text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                rows={4}
+                                placeholder="3 muza bir elma?"
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)} 
                                 disabled={loading}
-                                className='bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-medium transition active:scale-95'
-                            >
-                                {loading ? 'Sending...' : 'Send Offer'}
-                            </button>
-                        </div>
+                            />
+                            <div className='mt-4 flex justify-between items-center text-sm'>
+                                <button 
+                                    type='button'
+                                    onClick={onClose} 
+                                    className='text-zinc-400 hover:underline'
+                                >
+                                    Cancel
+                                </button>
+                                
+                                <button
+                                    type='submit'
+                                    onClick={handleSubmit}
+                                    disabled={loading}
+                                    className='bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-medium transition active:scale-95'
+                                >
+                                    {loading ? 'Sending...' : 'Send Offer'}
+                                </button>
+                            </div>
+                        </form>
                     </>
                 )}
             </div>

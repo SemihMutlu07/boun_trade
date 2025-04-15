@@ -20,6 +20,25 @@ export default function LoginPage() {
         checkSession();
     }, [router]);
     
+    useEffect(() => {
+      const insertUserIfNotExists = async () => {
+        const {data:{user}} = await supabase.auth.getUser();
+
+        if(user) {
+          await supabase.from('users').upsert({
+            id: users.id,
+            email: user.email,
+            display_name: 'nickname',
+            school_id: 'school_number',
+            role: 'student',
+          });
+        }
+      };
+
+      insertUserIfNotExists();
+    })
+
+
     const handleLogin = async () => {
         toast.dismiss();
 
