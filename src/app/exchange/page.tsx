@@ -12,6 +12,7 @@ interface Product {
   description: string
   category: string
   image_url: string
+  is_traded: boolean;
 }
 
 export default function ExchangePage() {
