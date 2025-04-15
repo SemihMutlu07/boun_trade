@@ -26,7 +26,7 @@ export default function LoginPage() {
 
         if(user) {
           await supabase.from('users').upsert({
-            id: users.id,
+            id: user.id,
             email: user.email,
             display_name: 'nickname',
             school_id: 'school_number',
