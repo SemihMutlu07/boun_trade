@@ -12,7 +12,7 @@ interface Product {
   category: string;
   image_url: string;
   is_traded: boolean;
-  user_id: string;
+  users_id: string;
 }
 
 export default function ProductDetailClient({ product }: { product: Product }) {
@@ -25,7 +25,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     });
   }, []);
 
-  const isOwner = currentUserId === product.user_id;
+  const isOwner = currentUserId === product.users_id;
 
   return (
     <div className="min-h-screen px-4 py-6 sm:px-6 bg-zinc-900 text-white">
@@ -69,7 +69,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         {isOpen && (
           <OfferModal
             productId={product.id}
-            toUserId={product.user_id}
+            toUserId={product.users_id}
             onClose={() => setIsOpen(false)}
           />
         )}

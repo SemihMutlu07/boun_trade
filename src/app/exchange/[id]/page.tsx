@@ -2,11 +2,11 @@ import { supabase } from '../../lib/supabase';
 import ProductDetailClient from './ProductDetailClient';
 
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  const { id } = await params;
+  const { id } =  params;
 
   const { data: product, error } = await supabase
     .from('products')
-    .select('id, title, description, category, image_url, is_traded, user_id')
+    .select('id, title, description, category, image_url, is_traded, users_id')
     .eq('id', id)
     .single();
 
