@@ -49,7 +49,7 @@ export default function ExchangePage() {
     )
   }
     return (
-    <div className="min-h-screen bg-zinc-900 text-white px-4 py-6 sm:px-6">
+    <div className="min-h-screen bg-zinc-900 navbar-safe-area text-white px-4 py-6 sm:px-6">
       <h1 className="text-2xl sm:text-3xl font-bold mb-4">Exchange Products</h1>
 
       <SearchInput value={searchTerm} onChange={setSearchTerm} />

@@ -20,6 +20,7 @@ export default function ProductCard({ product }: {product: Product }) {
                     src={`https://srkswqjjdfkdddwemqtd.supabase.co/storage/v1/object/public/images/${product.image_url}`}
                     alt={product.title}
                     fill
+                    priority
                     className="object-cover rounded"
                     sizes="(max-width: 768px) 100vw, 768px"
                 />
