@@ -83,7 +83,8 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
                         <h2 className='text-xl font-bold mb-4 text-center'>Offer Sent ✅</h2>
                         <button 
                             onClick={onClose} 
-                            className='bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded w-full text-sm font-medium transition active:scale-95'>
+                            className='bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded w-full text-sm font-medium transition active:scale-95'
+                        >
                             Close
                         </button>
                     </>

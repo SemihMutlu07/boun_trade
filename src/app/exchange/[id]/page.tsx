@@ -1,5 +1,3 @@
-// @ts-nocheck
-// exchange/[id]/page.tsx
 import { supabase } from '../../lib/supabase';
 import ProductDetailClient from './ProductDetailClient';
 
@@ -9,7 +7,7 @@ export default async function ProductDetailPage({ params }) {
 
   const { data: product, error } = await supabase
     .from('products')
-    .select('id, title, description, category, image_url, is_traded, users_id')
+    .select('id, title, description, category, image_url, is_traded, users_id, users:users_id (email)')
     .eq('id', id)
     .single();
 

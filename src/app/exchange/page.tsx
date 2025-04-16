@@ -7,12 +7,14 @@ import ProductCard from '../component/ProductCard'
 import toast from 'react-hot-toast'
 
 interface Product {
-  id: string
-  title: string
-  description: string
-  category: string
-  image_url: string
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  image_url: string;
   is_traded: boolean;
+  users_id: string;
+  users: {email: string}[];
 }
 
 export default function ExchangePage() {
@@ -24,22 +26,35 @@ export default function ExchangePage() {
 
   
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setIsFetching(true)
-      const { data, error } = await supabase.from('products').select('*')
-      if (error) {
-        console.error('Error fetching products:', error)
-        toast.error('Failed to load products.')
-      } else {
-        setProducts(data || [])
-      }
-      setLoading(false)
-      setIsFetching(false)
+// First, see the actual shape of data
+useEffect(() => {
+  const fetchProducts = async () => {
+    setIsFetching(true)
+    const { data, error } = await supabase
+      .from('products')
+      .select('id, title, description, category, image_url, is_traded, users_id, users:users_id (email)')
+    
+    if (error) {
+      console.error('Error fetching products:', error)
+      toast.error('Failed to load products.')
+    } else {
+      // Log to see actual structure
+      console.log('Received data:', data)
+      
+      // Transform if needed
+      const transformedData = data?.map(item => ({
+        ...item,
+        users: Array.isArray(item.users) ? item.users : [item.users]
+      })) || []
+      
+      setProducts(transformedData)
     }
+    setLoading(false)
+    setIsFetching(false)
+  }
 
-    fetchProducts()
-  }, [])
+  fetchProducts()
+}, [])
 
   if (loading || isFetching) {
     return (
@@ -98,6 +113,7 @@ export default function ExchangePage() {
             ))}
         </div>
       )}
+      
     </div>
   )
 }
