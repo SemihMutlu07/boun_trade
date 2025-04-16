@@ -1,12 +1,13 @@
 import { supabase } from '../../lib/supabase';
 import ProductDetailClient from './ProductDetailClient';
 
-interface PageProps {
+interface Props {
   params: {id:string};
+  serachParams: Record<string, string | string[] | undefined>;
 }
 
-export default async function ProductDetailPage({params }: PageProps){
-  const { id } = params;
+export default async function ProductDetailPage({params }: Props){
+  const id  = params;
   
 
   const { data: product, error } = await supabase
