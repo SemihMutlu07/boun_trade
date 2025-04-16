@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase';
 import Image from 'next/image';
 import OfferModal from '../../component/OfferModal';
 import getNameFromEmail from '../../utils/emailName';
+import Link from 'next/link';
 
 interface Product {
   id: string;
@@ -23,10 +24,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      setCurrentUserId(data.user?.id || null);
-    });
-  }, []);
-
+      setCurrentUserId(data.user?.id || null)
+    })
+  }, [])
+  
   const isOwner = currentUserId === product.users_id;
 
   return (
@@ -54,13 +55,12 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         </span>
 
         <div className="mt-6">
-          {!currentUserId ? (
-            <p className="text-red-400 font-medium">Please log in to send an offer.</p>
-          ) : product.is_traded ? (
+
+          {product.is_traded ? (
             <p className="text-red-400 font-medium">This product has already been traded.</p>
           ) : isOwner ? (
             <p className="text-yellow-400 text-sm">You own this item.</p>
-          ) : (
+          ) : currentUserId ? (
             <>
               <p className="text-sm text-zinc-300 mb-2">Want to make an offer?</p>
               <button
@@ -70,7 +70,15 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 Send Offer
               </button>
             </>
+          ) : (
+            <Link
+              href="/login"
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition active:scale-95"
+            >
+              Log in to Send Offer
+            </Link>
           )}
+
         </div>
         <p className='text-sm text-zinc-400 mb-2'>
           Owner: {product.users[0]?.email ? getNameFromEmail(product.users[0].email) : 'Unknown'}

@@ -26,36 +26,43 @@ export default function ExchangePage() {
 
   
 
-// First, see the actual shape of data
-useEffect(() => {
-  const fetchProducts = async () => {
-    setIsFetching(true)
-    const { data, error } = await supabase
-      .from('products')
-      .select('id, title, description, category, image_url, is_traded, users_id, users:users_id (email)')
-    
-    if (error) {
-      console.error('Error fetching products:', error)
-      toast.error('Failed to load products.')
-    } else {
-      // Log to see actual structure
-      console.log('Received data:', data)
-      
-      // Transform if needed
-      const transformedData = data?.map(item => ({
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsFetching(true)
+  
+      const { data, error } = await supabase
+        .from('products')
+        .select(`
+          id, 
+          title, 
+          description, 
+          category, 
+          image_url, 
+          is_traded, 
+          users_id, 
+          users:users_id (email)
+        `)
+  
+      if (error) {
+        console.error('Error fetching products:', error)
+        toast.error('Failed to load products.')
+        setIsFetching(false)
+        setLoading(false)
+        return
+      }
+  
+      const transformedData = (data || []).map((item) => ({
         ...item,
-        users: Array.isArray(item.users) ? item.users : [item.users]
-      })) || []
-      
+        users: Array.isArray(item.users) ? item.users : [item.users ?? { email: '' }],
+      }))
+  
       setProducts(transformedData)
+      setIsFetching(false)
+      setLoading(false)
     }
-    setLoading(false)
-    setIsFetching(false)
-  }
-
-  fetchProducts()
-}, [])
-
+  
+    fetchProducts()
+  }, [])
   if (loading || isFetching) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
