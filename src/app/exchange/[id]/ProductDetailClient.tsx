@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import Image from 'next/image';
 import OfferModal from '../../component/OfferModal';
-import getNameFromEmail from '../../utils/emailName';
 import Link from 'next/link';
 
 interface Product {
@@ -15,7 +14,6 @@ interface Product {
   image_url: string;
   is_traded: boolean;
   users_id: string;
-  users: {email: string}[]
 }
 
 export default function ProductDetailClient({ product }: { product: Product }) {
@@ -46,8 +44,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
         <h1 className="text-3xl sm:text-4xl font-bold mb-2">{product.title}</h1>
         
-        <p className='text-sm'>
-        Offer by: {product.users[0]?.email ? getNameFromEmail(product.users[0].email) : 'Unknown'}        </p>
+        {/**username will come here eventually */}
 
         <p className="text-zinc-400 mb-4">{product.description}</p>
         <span className="inline-block bg-zinc-800 px-3 py-1 text-sm rounded">
@@ -80,9 +77,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           )}
 
         </div>
-        <p className='text-sm text-zinc-400 mb-2'>
-          Owner: {product.users[0]?.email ? getNameFromEmail(product.users[0].email) : 'Unknown'}
-        </p>
+
+          {/**offer by: logic will come here */}
 
         {isOpen && (
           <OfferModal

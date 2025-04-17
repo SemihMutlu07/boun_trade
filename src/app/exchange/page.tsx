@@ -14,7 +14,6 @@ interface Product {
   image_url: string;
   is_traded: boolean;
   users_id: string;
-  users: {email: string}[];
 }
 
 export default function ExchangePage() {

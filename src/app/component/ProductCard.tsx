@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import getNameFromEmail from '../utils/emailName';
 import {useState, useEffect} from 'react';
 import {supabase} from '../lib/supabase';
 import OfferModal from './OfferModal';
@@ -15,7 +14,6 @@ interface Product {
     category: string
     image_url: string
     is_traded: boolean
-    users: {email :string}[]
 }
 
 export default function ProductCard({ product }: {product: Product }) {
@@ -43,7 +41,7 @@ export default function ProductCard({ product }: {product: Product }) {
                         sizes="(max-width: 768px) 100vw, 768px"
                     />
                 </div>
-                Offer by: {product.users[0]?.email ? getNameFromEmail(product.users[0].email) : 'Unknown'}
+                {/**username gargagr */}
                 <h2 className='text-lg sm:text-xl font-semibold line-clamp-1'>{product.title}</h2>
                 <p className='text-sm text-zinc-300 mt-1 line-clamp-2'>{product.description}</p>
                 <span className='text-xs mt-2 inline-block bg-zinc-700 px-2 py-1 rounded self-start'>
@@ -58,7 +56,7 @@ export default function ProductCard({ product }: {product: Product }) {
                         View Product            
                     </Link>
 
-                    {!isOwner && (
+                    {currentUserId && !isOwner && (
                         <button
                             onClick={() => setIsOpen(true)}
                             className='text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-center w-full transition active:scale-95'
