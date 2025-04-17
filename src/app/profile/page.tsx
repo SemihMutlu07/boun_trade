@@ -338,7 +338,7 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div className='py-10 text-center text-zinc-400'>
-              <p>You haven&apost added any products yet.</p>
+              <p>You have not any products yet.</p>
               <button 
                 className='mt-3 px-4 py-2 bg-blue-600 rounded text-sm hover:bg-blue-700'
                 onClick={() => router.push('/add-product')}
