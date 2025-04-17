@@ -139,6 +139,7 @@ export default function ProfilePage() {
 
     if (error) {
       toast.dismiss()
+      console.error(error)
       toast.error('Failed to update profile.')
     } else {
       toast.dismiss()
