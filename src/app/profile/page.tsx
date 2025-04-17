@@ -13,6 +13,9 @@ interface User {
   role: string
   display_name?: string | null
   department?: string | null
+  image_url?: string | null
+  public_profile?: boolean
+  hide_email?: boolean
 }
 
 interface Product {
@@ -40,6 +43,9 @@ export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null)
   const [displayName, setDisplayName] = useState('')
   const [department, setDepartment] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  const [publicProfile, setPublicProfile] = useState(true)
+  const [hideEmail, setHideEmail] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
   const [offers, setOffers] = useState<Offer[]>([])
   const [loading, setLoading] = useState(true)
@@ -51,14 +57,14 @@ export default function ProfilePage() {
         error,
       } = await supabase.auth.getUser()
 
-      if (!authUser || error){
+      if (!authUser || error) {
         setLoading(false)
         return
       }
 
       const { data: dbUser } = await supabase
         .from('users')
-        .select('display_name, department')
+        .select('display_name, department, image_url, public_profile, hide_email')
         .eq('id', authUser.id)
         .single()
 
@@ -68,10 +74,16 @@ export default function ProfilePage() {
         role: '',
         display_name: dbUser?.display_name ?? '',
         department: dbUser?.department ?? '',
+        image_url: dbUser?.image_url ?? '',
+        public_profile: dbUser?.public_profile ?? true,
+        hide_email: dbUser?.hide_email ?? false,
       })
 
       setDisplayName(dbUser?.display_name ?? '')
       setDepartment(dbUser?.department ?? '')
+      setImageUrl(dbUser?.image_url ?? '')
+      setPublicProfile(dbUser?.public_profile ?? true)
+      setHideEmail(dbUser?.hide_email ?? false)
 
       const { data: userProducts } = await supabase
         .from('products')
@@ -117,10 +129,13 @@ export default function ProfilePage() {
       .update({ 
         display_name: displayName,
         department: department,
+        image_url: imageUrl,
+        public_profile: publicProfile,
+        hide_email: hideEmail
       })
       .eq('id', user.id)
 
-    if(error) {
+    if (error) {
       toast.error('Failed to update profile.')
     } else {
       toast.success('Profile updated')
@@ -128,7 +143,7 @@ export default function ProfilePage() {
   }
 
   const handleLogout = async () => {
-    const {error} = await supabase.auth.signOut()
+    const { error } = await supabase.auth.signOut()
     if (error) {
       toast.error('Logout Failed.')
     } else {
@@ -140,18 +155,18 @@ export default function ProfilePage() {
   const handleDeleteAccount = async () => {
     if (!user) return
 
-    const {error: deleteError} = await supabase
+    const { error: deleteError } = await supabase
       .from('users')
       .delete()
       .eq('id', user.id)
 
     if (deleteError) {
-      toast.error('Failed to delete acccount.')
+      toast.error('Failed to delete account.')
       return
     }
 
-    const {error: signOutError} = await supabase.auth.signOut()
-    if(signOutError) {
+    const { error: signOutError } = await supabase.auth.signOut()
+    if (signOutError) {
       toast.error('Signed out error after deleting.')
       return
     }
@@ -166,6 +181,23 @@ export default function ProfilePage() {
       <p className='text-zinc-400 text-sm'>Email: {user?.email}</p>
 
       <div className='mt-4 flex flex-col gap-4 sm:flex-row sm:items-center'>
+        {user?.image_url && (
+          <Image
+            src={user.image_url}
+            alt='ProfilePicture'
+            width={80}
+            height={80}
+            className='rounded-full object-cover mb-4'
+          />
+        )}
+        <input
+          className="p-2 mt-2 rounded bg-zinc-800 border border-zinc-700 w-full max-w-xs text-sm"
+          type="text"
+          placeholder="Profile image URL"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+        />
+
         <input
           className='p-2 rounded bg-zinc-800 border border-zinc-700 w-full max-w-xs text-sm'
           type='text'
@@ -180,6 +212,24 @@ export default function ProfilePage() {
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
         />
+        <div className='flex flex-col gap-1 text-sm'>
+          <label className='flex items-center gap-2'>
+            <input
+              type='checkbox'
+              checked={publicProfile}
+              onChange={(e) => setPublicProfile(e.target.checked)}
+            />
+            Public Profile
+          </label>
+          <label className='flex items-center gap-2'>
+            <input
+              type='checkbox'
+              checked={hideEmail}
+              onChange={(e) => setHideEmail(e.target.checked)}
+            />
+            Hide Email
+          </label>
+        </div>
         <button
           className='px-4 py-2 bg-blue-600 rounded text-sm hover:bg-blue-700'
           onClick={updateProfile}
