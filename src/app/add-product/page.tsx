@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import LoginRequired from '../component/LoginRequired'
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 
 interface User {
@@ -21,6 +22,7 @@ export default function AddProductPage() {
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter();
 
 
     useEffect(() => {
@@ -110,6 +112,7 @@ export default function AddProductPage() {
       setDescription('');
       setImageFile(null);
       setIsSubmitting(false);
+      router.push('/exchange');
     };
     
     return (
@@ -130,13 +133,17 @@ export default function AddProductPage() {
                 onChange={(e) => setDescription(e.target.value)}
               />
               <select
-                className="w-full bg-zinc-700 border border-zinc-600 p-2 rounded"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
+                required
+                className="bg-zinc-700 text-white px-4 py-2 rounded"
               >
-                <option value="food">Food</option>
+                <option value="" disabled selected hidden>
+                  Select category
+                </option>
                 <option value="clothing">Clothing</option>
                 <option value="electronics">Electronics</option>
+                <option value="food">Food</option>
               </select>
               <input
                 type="file"

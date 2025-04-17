@@ -12,6 +12,7 @@ interface User {
   email: string
   role: string
   display_name?: string | null
+  department?: string | null
 }
 
 interface Product {
@@ -34,12 +35,11 @@ interface Offer {
   }
 }
 
-
-
 export default function ProfilePage() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [displayName, setDisplayName] = useState('')
+  const [department, setDepartment] = useState('')
   const [products, setProducts] = useState<Product[]>([])
   const [offers, setOffers] = useState<Offer[]>([])
   const [loading, setLoading] = useState(true)
@@ -56,19 +56,22 @@ export default function ProfilePage() {
         return
       }
 
+      const { data: dbUser } = await supabase
+        .from('users')
+        .select('display_name, department')
+        .eq('id', authUser.id)
+        .single()
+
       setUser({
         id: authUser.id,
         email: authUser.email ?? '',
         role: '',
+        display_name: dbUser?.display_name ?? '',
+        department: dbUser?.department ?? '',
       })
 
-      const { data: dbUser } = await supabase
-        .from('users')
-        .select('display_name')
-        .eq('id', authUser.id)
-        .single()
-
-      if (dbUser?.display_name) setDisplayName(dbUser.display_name)
+      setDisplayName(dbUser?.display_name ?? '')
+      setDepartment(dbUser?.department ?? '')
 
       const { data: userProducts } = await supabase
         .from('products')
@@ -106,22 +109,23 @@ export default function ProfilePage() {
       </div>
     )
   }
-  
 
-  const updateDisplayName = async () => {
+  const updateProfile = async () => {
     if (!user) return
     const { error } = await supabase
       .from('users')
-      .update({ display_name: displayName })
+      .update({ 
+        display_name: displayName,
+        department: department,
+      })
       .eq('id', user.id)
 
-      if(error) {
-        toast.error('Failed to update name.')
-      } else {
-        toast.success('Display name updated')
-      }
-
+    if(error) {
+      toast.error('Failed to update profile.')
+    } else {
+      toast.success('Profile updated')
     }
+  }
 
   const handleLogout = async () => {
     const {error} = await supabase.auth.signOut()
@@ -141,27 +145,27 @@ export default function ProfilePage() {
       .delete()
       .eq('id', user.id)
 
-      if (deleteError) {
-        toast.error('Failed to delete acccount.')
-        return
-      }
-      
-      const {error: signOutError} = await supabase.auth.signOut()
-      if(signOutError) {
-        toast.error('Signed out error after deleting.')
-        return
-      }
+    if (deleteError) {
+      toast.error('Failed to delete acccount.')
+      return
+    }
 
-      toast.success('Account deleted.')
-      router.push('/')
+    const {error: signOutError} = await supabase.auth.signOut()
+    if(signOutError) {
+      toast.error('Signed out error after deleting.')
+      return
+    }
+
+    toast.success('Account deleted.')
+    router.push('/')
   }
 
   return (
-    <div className='min-h-screen p-4 sm:p-6  bg-zinc-900 text-white'>
+    <div className='min-h-screen p-4 sm:p-6 bg-zinc-900 text-white'>
       <h1 className='text-2xl font-bold mb-4'>My Profile</h1>
       <p className='text-zinc-400 text-sm'>Email: {user?.email}</p>
 
-      <div className='mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-2'>
+      <div className='mt-4 flex flex-col gap-4 sm:flex-row sm:items-center'>
         <input
           className='p-2 rounded bg-zinc-800 border border-zinc-700 w-full max-w-xs text-sm'
           type='text'
@@ -169,11 +173,18 @@ export default function ProfilePage() {
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
         />
+        <input
+          className='p-2 rounded bg-zinc-800 border border-zinc-700 w-full max-w-xs text-sm'
+          type='text'
+          placeholder='Department'
+          value={department}
+          onChange={(e) => setDepartment(e.target.value)}
+        />
         <button
           className='px-4 py-2 bg-blue-600 rounded text-sm hover:bg-blue-700'
-          onClick={updateDisplayName}
+          onClick={updateProfile}
         >
-          Save
+          Save Changes
         </button>
       </div>
 

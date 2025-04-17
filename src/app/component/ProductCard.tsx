@@ -43,7 +43,11 @@ export default function ProductCard({ product }: {product: Product }) {
                 </div>
                 {/**username gargagr */}
                 <h2 className='text-lg sm:text-xl font-semibold line-clamp-1'>{product.title}</h2>
-                <p className='text-sm text-zinc-300 mt-1 line-clamp-2'>{product.description}</p>
+                <p className='text-sm text-zinc-300 mt-1 line-clamp-2'>
+                {product.description.length > 280
+                    ? product.description.slice(0, 280) + '...'
+                    : product.description}                    
+                </p>
                 <span className='text-xs mt-2 inline-block bg-zinc-700 px-2 py-1 rounded self-start'>
                     {product.category}
                 </span>
