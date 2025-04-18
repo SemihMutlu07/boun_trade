@@ -30,6 +30,7 @@ interface Offer {
   from_user: string
   to_user: string
   product_id: string
+  meeting_point?: string
   status: string
   product: {
     title: string
@@ -48,6 +49,7 @@ export default function ProfilePage() {
   const [hideEmail, setHideEmail] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
   const [offers, setOffers] = useState<Offer[]>([])
+  const [receivedOffers, setReceivedOffers] = useState<Offer[]>([])
   const [loading, setLoading] = useState(true)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
@@ -89,24 +91,22 @@ export default function ProfilePage() {
       const { data: userProducts } = await supabase
         .from('products')
         .select('id, title, image_url')
-        .eq('user_id', authUser.id)
+        .eq('users_id', authUser.id)
 
       setProducts(userProducts || [])
 
       const { data: userOffers } = await supabase
         .from('offers')
-        .select(`
-          *,
-          product:products (
-            id,
-            title,
-            image_url
-          )
-        `)
+        .select(`*, product:products (id, title, image_url)`)
         .eq('from_user', authUser.id)
 
-      setOffers(userOffers || [])
+      const { data: received } = await supabase
+        .from('offers')
+        .select(`*, product:products (id, title, image_url)`) 
+        .eq('to_user', authUser.id)
 
+      setOffers(userOffers || [])
+      setReceivedOffers(received || [])
       setLoading(false)
     }
 
@@ -122,6 +122,7 @@ export default function ProfilePage() {
       </div>
     )
   }
+
 
   const updateProfile = async () => {
     if (!user) return
@@ -190,6 +191,41 @@ export default function ProfilePage() {
   return (
     <div className='min-h-screen bg-zinc-900 text-white'>
       <div className='max-w-5xl mx-auto p-6'>
+
+          {/* Received Offers */}
+          <div className='bg-zinc-800 rounded-lg p-6 mb-8 border border-zinc-700'>
+          <h2 className='text-xl font-semibold mb-5'>Received Offers</h2>
+
+          {receivedOffers.length > 0 ? (
+            <div className='space-y-4'>
+              {receivedOffers.map((offer) => (
+                <div key={offer.id} className='bg-zinc-900 p-4 rounded-lg border border-zinc-700'>
+                  <div className='flex items-start gap-4'>
+                    <div className='w-16 h-16 bg-zinc-800 rounded overflow-hidden'>
+                      <Image
+                        src={`https://srkswqjjdfkdddwemqtd.supabase.co/storage/v1/object/public/images/${offer.product.image_url}`}
+                        alt={offer.product.title}
+                        width={64}
+                        height={64}
+                        className='w-full h-full object-cover'
+                      />
+                    </div>
+                    <div className='flex-1'>
+                      <h3 className='font-medium'>{offer.product.title}</h3>
+                      <p className='text-sm text-zinc-400 mt-1'>{offer.message}</p>
+                      {offer.meeting_point && (
+                        <p className='text-sm text-zinc-500 mt-1'>📍 {offer.meeting_point}</p>
+                      )}
+                      <p className='text-sm text-yellow-400 mt-2'>Status: {offer.status}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className='text-zinc-400'>No received offers yet.</p>
+          )}
+        </div>
         <div className='flex justify-between items-center mb-8'>
           <h1 className='text-3xl font-bold'>My Profile</h1>
           <div className='flex gap-3'>

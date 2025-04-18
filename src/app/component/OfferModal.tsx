@@ -16,6 +16,7 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [sent, setSent] = useState(false);
+    const [meetingPoint, setMeetingPoint] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -108,6 +109,18 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
                                 >
                                     Cancel
                                 </button>
+                                <select
+                                className="w-full bg-zinc-700 text-sm mt-2 p-2 rounded"
+                                value={meetingPoint}
+                                onChange={(e) => setMeetingPoint(e.target.value)}
+                                >
+                                <option value="">Select Meeting Point</option>
+                                <option value="Güney Kampüs">Güney Kampüs</option>
+                                <option value="Kuzey Kampüs">Kuzey Kampüs</option>
+                                <option value="Library">Library</option>
+                                <option value="Yemekhane">Yemekhane</option>
+                                </select>
+                                
                                 
                                 <button
                                     type='submit'
