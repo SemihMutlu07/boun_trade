@@ -64,6 +64,7 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
             product_id: productId,
             status: 'pending',
             message,
+            meeting_point: meetingPoint,
         });
 
         if(!error) {
