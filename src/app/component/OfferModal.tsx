@@ -102,37 +102,37 @@ export default function OfferModal({ productId, toUserId, onClose }: OfferModalP
                                 onChange={(e) => setMessage(e.target.value)} 
                                 disabled={loading}
                             />
-                            <div className='mt-4 flex justify-between items-center text-sm'>
-                                <button 
-                                    type='button'
-                                    onClick={onClose} 
-                                    className='text-zinc-400 hover:underline'
-                                >
-                                    Cancel
-                                </button>
-                                <select
+                            <select
                                 className="w-full bg-zinc-700 text-sm mt-2 p-2 rounded"
                                 value={meetingPoint}
                                 onChange={(e) => setMeetingPoint(e.target.value)}
-                                >
+                                disabled={loading}
+                            >
                                 <option value="">Select Meeting Point</option>
                                 <option value="Güney Kampüs">Güney Kampüs</option>
                                 <option value="Kuzey Kampüs">Kuzey Kampüs</option>
                                 <option value="Library">Library</option>
                                 <option value="Yemekhane">Yemekhane</option>
-                                </select>
-                                
-                                
-                                <button
-                                    type='submit'
-                                    onClick={handleSubmit}
-                                    disabled={loading}
-                                    className='bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-medium transition active:scale-95'
+                            </select>
+                            <div className='mt-4 flex justify-between items-center text-sm gap-3'>
+                                <button 
+                                type='button'
+                                onClick={onClose} 
+                                className='text-zinc-400 hover:underline'
+                                disabled={loading}
                                 >
-                                    {loading ? 'Sending...' : 'Send Offer'}
+                                Cancel
+                                </button>
+                                <button
+                                type='submit'
+                                disabled={loading}
+                                className='bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-medium transition active:scale-95'
+                                >
+                                {loading ? 'Sending...' : 'Send Offer'}
                                 </button>
                             </div>
-                        </form>
+                            </form>
+
                     </>
                 )}
             </div>
